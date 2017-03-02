@@ -1,0 +1,74 @@
+server.py json-rpc server
+
+http://www.jsonrpc.org/specification
+due to jsonrcp 2.0 specification:
+each rpc call:
+
+//request to server
+{
+    //require
+    "jsonrpc": "2.0", 
+
+    //require all names starts from ".rpc" reserverd
+    "method": "method name", 
+
+    //optional
+    "params": {array|object}, 
+
+    //normally should not be null, number - only integer
+    //when id is ommit or null, such request is notification
+    //server not response for notification
+    "id": {string|number|null} 
+}
+
+//response
+{
+    //require
+    "jsonrpc": "2.0",
+
+    //must not exist on error, required for success
+    "result": {any},
+
+    //request, correspond with request id
+    //must be null for error
+    "id": {string|number}
+
+    //for error only
+    //-32700(parse error)
+    //-32600(invalid request)
+    //-32601(method not found)
+    //-32602(invalid params)
+    //-32603 internal error
+    //-32999 to -32099 reserver for server implementation error
+    "code": {number}
+}
+
+
+server middleware API
+
+Server needs to manage several blackbox-modules writen on
+any languages, with each self api.
+Main responsobility of such server it is run modules by schedule,
+collect locally data and support jsonrpc protocol
+
+1. invoke method for read and return structure of bacnet device
+-->
+{
+    "jsorpc": "2.0",
+    "method": "export.BACnet", //TODO rename functon (get structure of device)
+    "params": {
+        "device": 500, 
+        "host": "192.168.1.40", 
+        "port": 4000
+    },
+    "id": "uuid"
+}
+<--
+{
+    "jsonrpc": "2.0",
+    "result": [{...}, {...}],
+    "id": "uuid"
+}
+
+
+
